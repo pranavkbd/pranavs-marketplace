@@ -1,0 +1,17 @@
+{
+  "name": "pranavs-marketplace",
+  "owner": { "name": "Pranav Bodawala" },
+  "metadata": { "description": "Pranav's Claude Code plugins." },
+  "plugins": [
+    {
+      "name": "assistant-worker",
+      "source": "./plugins/assistant-worker",
+      "description": "An assistant you talk to and one worker session per thread of work, plus a browser agent that keeps Playwright out of everyone's context."
+    },
+    {
+      "name": "fineline",
+      "source": "./plugins/fineline",
+      "description": "Fineline status line: thin hairline bars, branch and model on top; context and 5-hour and 7-day limits below."
+    }
+  ]
+}

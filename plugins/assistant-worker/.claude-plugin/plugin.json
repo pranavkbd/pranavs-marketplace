@@ -1,0 +1,6 @@
+{
+  "name": "assistant-worker",
+  "version": "0.1.0",
+  "description": "An assistant you talk to and one worker session per thread of work, plus a browser agent that keeps Playwright out of everyone's context.",
+  "author": { "name": "Pranav Bodawala" }
+}
