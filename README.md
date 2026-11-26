@@ -13,3 +13,12 @@ Install one:
 /plugin marketplace add pranavkbd/pranavs-marketplace
 /plugin install fineline@pranavs-marketplace
 ```
+
+For example, to install assistant-worker:
+
+```
+/plugin marketplace add pranavkbd/pranavs-marketplace
+/plugin install assistant-worker@pranavs-marketplace
+```
+
+Then follow [its README](plugins/assistant-worker/) to add the `assistant` and `worker` shell launchers.
