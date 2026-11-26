@@ -10,5 +10,6 @@ My Claude Code plugins.
 Install one:
 
 ```
-/plugin install assistant-worker --marketplace pranavkbd/pranavs-marketplace
+/plugin marketplace add pranavkbd/pranavs-marketplace
+/plugin install fineline@pranavs-marketplace
 ```
