@@ -9,7 +9,8 @@ screenshots and snapshots never fill anyone else's context.
 ## Install
 
 ```
-/plugin install assistant-worker --marketplace pranavkbd/pranavs-marketplace
+/plugin marketplace add pranavkbd/pranavs-marketplace
+/plugin install assistant-worker@pranavs-marketplace
 ```
 
 Then add the launchers to `~/.zshrc` (path from `/plugin` → assistant-worker, or copy the file):
