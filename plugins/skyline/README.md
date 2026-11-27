@@ -11,7 +11,7 @@ stacked bar chart of tokens per call for every message, one "building" per messa
   25k
       ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  59 messages
       ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  session 308.0k new · 172.1k out · 34.3M re-read total (all calls)
-      ──────────────────────────────────────────────────────
+      ──────────────────────────────────────────────────────  154 calls
 ```
 
 - **Line 1:** context-window bar, then the last message: calls × average document size = tokens

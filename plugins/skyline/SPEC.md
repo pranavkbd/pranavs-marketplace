@@ -16,7 +16,7 @@ and the bottom of each bar are teal.
   25k
       ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  59 messages
       ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  session 308.0k new · 172.1k out · 34.3M re-read total (all calls)
-      ──────────────────────────────────────────────────────
+      ──────────────────────────────────────────────────────  154 calls
 ```
 
 - **Line 1:** the context-window bar, then what the user's last message cost.
