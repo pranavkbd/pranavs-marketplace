@@ -1,9 +1,9 @@
-# Shared helpers for clear-yourself. Sourced, not run.
+# Shared helpers for clear-me-now. Sourced, not run.
 # A pending handoff is a file in $STATE_DIR named after the Claude Code process. /clear keeps the
 # same process, so the script the agent runs before /clear and the SessionStart hook after it
 # both find the same file, and two sessions in the same folder never pick up each other's.
 
-STATE_DIR="$HOME/.claude/clear-yourself"
+STATE_DIR="$HOME/.claude/clear-me-now"
 
 # Key for this session: the Claude Code process ID, found by walking up the parent chain.
 # Falls back to the working directory if no Claude process is found.

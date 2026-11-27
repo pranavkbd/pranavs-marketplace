@@ -12,9 +12,9 @@ rm -f "$f"
 [ $(( $(date +%s) - ${marked:-0} )) -le 86400 ] || exit 0
 [ -f "$handoff" ] || exit 0
 cat <<EOF
-The user just ran /clear to continue this work with a fresh context, using clear-yourself. Your
+The user just ran /clear to continue this work with a fresh context, using clear-me-now. Your
 previous self wrote a handoff file for you: $handoff
-This is now your handoff file: when you are asked to clear yourself again, update this one.
+This is now your handoff file: when the user says they are gonna clear you again, update this one.
 
 Before anything else, whatever the user's first message is, read that file in full, plus any
 documents it links that you need. Then continue the work from where it left off. Don't greet

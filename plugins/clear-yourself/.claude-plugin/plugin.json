@@ -1,6 +1,0 @@
-{
-  "name": "clear-yourself",
-  "version": "0.1.0",
-  "description": "Say \"clear yourself\" and Claude writes a handoff document, you type /clear, and the fresh session reads it and carries on. Claude pushes back if it's in the middle of something.",
-  "author": { "name": "Pranav Bodawala" }
-}

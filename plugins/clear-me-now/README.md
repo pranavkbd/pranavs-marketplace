@@ -1,9 +1,9 @@
-# clear-yourself
+# Clear Me Now
 
 Long sessions get slow and expensive, because every step re-reads the whole conversation.
-clear-yourself lets you reset one without losing your place:
+Clear Me Now lets you reset one without losing your place:
 
-1. You say **"clear yourself"**.
+1. You say **"I'm gonna clear you"**.
 2. Claude checks whether now is a good time. If a subagent or command is still running, or it's
    halfway through a change, it says so and tells you when it will be ready.
 3. Otherwise it writes or updates a **handoff document**: the goal, where things stand and the
@@ -37,7 +37,7 @@ In a `.local/` folder at the top of the repo (the current folder outside git, no
 ## Install
 
 ```
-/plugin install clear-yourself@pranavs-marketplace
+/plugin install clear-me-now@pranavs-marketplace
 ```
 
 No setup. Tested in the terminal; it uses only a skill and a `SessionStart` hook, so it should
@@ -46,7 +46,7 @@ work the same in the IDE extensions and the desktop app.
 ## How the new session finds the handoff
 
 When Claude finishes the handoff it runs `scripts/mark-handoff.sh`, which records the path in
-`~/.claude/clear-yourself/`, keyed by the Claude Code process (`/clear` keeps the same process).
+`~/.claude/clear-me-now/`, keyed by the Claude Code process (`/clear` keeps the same process).
 A `SessionStart` hook that only runs after `/clear` picks it up and tells the new session to read
 it. Two sessions in the same folder don't mix up their handoffs, and a record older than a day is
 ignored.

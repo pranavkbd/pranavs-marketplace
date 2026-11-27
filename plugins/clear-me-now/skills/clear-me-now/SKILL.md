@@ -1,11 +1,11 @@
 ---
-name: clear-yourself
-description: Use when the user tells you to "clear yourself" (or "clear your context", "start fresh", "hand off and clear"). Pushes back if you are in the middle of something; otherwise writes or updates a handoff document so that, after the user types /clear, the fresh session reads it and carries on.
+name: clear-me-now
+description: Use when the user says "I'm gonna clear you" (or "I'm going to clear you", "gonna clear you"). Pushes back if you are in the middle of something; otherwise writes or updates a handoff document so that, after the user types /clear, the fresh session reads it and carries on.
 ---
 
-# Clear yourself
+# Clear me now
 
-The user wants this session cleared so you continue with a fresh, small context. Done right it
+The user is about to clear this session so you continue with a fresh, small context. Done right it
 is seamless for them: you write a handoff, they type `/clear`, and the new you picks up exactly
 where you left off. Three steps, in order.
 
