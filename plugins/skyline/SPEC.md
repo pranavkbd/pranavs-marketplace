@@ -14,9 +14,9 @@ and the bottom of each bar are teal.
                                                            ■ new input
                                                            ■ re-read ÷20  (335.0k per call now)
   25k
-      ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  59 messages
+      ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  154 calls · 59 messages
       ▐█████▐███▐███▐▐▐▐█▐▐███▐██▐████▐███▐██▐██▐█▐▐█▐█▐█  session 308.0k new · 172.1k out · 34.3M re-read total (all calls)
-      ──────────────────────────────────────────────────────  154 calls
+      ──────────────────────────────────────────────────────
 ```
 
 - **Line 1:** the context-window bar, then what the user's last message cost.
@@ -37,7 +37,7 @@ and the bottom of each bar are teal.
 
 Each call re-reads the whole document, so **total re-read ≈ calls × average document size**. In a
 long session, re-reads are most of the tokens. The number of calls is the multiplier, which is why
-the call count sits on the baseline in bold violet.
+the call count leads the label in bold violet.
 
 ## Inputs
 
@@ -91,7 +91,7 @@ visible even when the document is 300k tokens.
 - **The chart grows to the right** up to `W = STATUSLINE_CHART_WIDTH`, default `COLUMNS − 80`,
   minimum 20.
 - **When the calls no longer fit in W, the oldest whole messages scroll off the left.** A message
-  is never cut in half. The count label then says `last 49 of 59 messages`.
+  is never cut in half. The count label then says `154 calls · last 49 of 59 messages`.
 
 ### Height and scale
 
@@ -117,9 +117,8 @@ visible even when the document is 300k tokens.
 
 Labels follow the bars directly, so they move right as the chart grows. From the top: `■ output`,
 `■ new input`, `■ re-read ÷20  (335.0k per call now)` (the last call's raw re-read, dimmed), then
-on row 1 the bold message count, and on row 0 the dimmed session totals. A dimmed `─`
-baseline as long as the bars sits underneath, followed by the call count in bold violet (`38;5;141`, a
-color no bar layer uses).
+on row 1 the call count in bold violet (`38;5;141`, a color no bar layer uses) followed by the message count, and on row 0 the dimmed session totals. A dimmed `─`
+baseline as long as the bars sits underneath.
 
 ## Pitfalls
 
