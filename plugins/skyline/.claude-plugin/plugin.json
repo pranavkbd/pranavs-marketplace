@@ -1,6 +1,8 @@
 {
   "name": "skyline",
   "version": "0.1.0",
-  "description": "Skyline token usage status line: context bar, what your last message cost, and a stacked chart of tokens per call for every message.",
-  "author": { "name": "Pranav Bodawala" }
+  "description": "Skyline: a token usage chart that goes below your existing status line, not in place of it. Shows what your last message cost and tokens per call for every message.",
+  "author": {
+    "name": "Pranav Bodawala"
+  }
 }

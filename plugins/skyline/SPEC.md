@@ -1,6 +1,7 @@
 # Skyline spec
 
-How the skyline status line works. The implementation is [`skyline.sh`](skyline.sh) (bash, jq,
+How the skyline status line works. Skyline is meant to sit below another status line (model,
+branch, context, rate limits), not to replace it, so it draws no context bar of its own. The implementation is [`skyline.sh`](skyline.sh) (bash, jq,
 awk). It has been tested on macOS (Apple Terminal, Claude Code 2.1.x).
 
 ## What it looks like
@@ -9,7 +10,7 @@ On screen, `■ output` and the top of each bar are red, `■ new input` is ambe
 and the bottom of each bar are teal.
 
 ```
-▰▰▰▱▱▱▱▱ 34%  last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
+last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
   50k                                                      ■ output
                                                            ■ new input
                                                            ■ re-read ÷20  (335.0k per call now)
@@ -19,7 +20,7 @@ and the bottom of each bar are teal.
       ──────────────────────────────────────────────────────
 ```
 
-- **Line 1:** the context-window bar, then what the user's last message cost.
+- **Line 1:** what the user's last message cost.
 - **The chart:** one bar per message the user sent. A bar's **width** is the number of model calls
   that message took (one column per call). Its **height** is the average tokens per call, stacked
   bottom to top as re-read (divided by 20), new input, then output. Each bar starts with a thin gap.
@@ -41,9 +42,8 @@ the call count leads the label in bold violet.
 
 ## Inputs
 
-1. **Status line JSON on stdin.** Two fields are used:
-   - `.context_window.used_percentage`: context fullness, 0 to 100
-   - `.transcript_path`: path to the session transcript (JSONL)
+1. **Status line JSON on stdin.** Only `.transcript_path` is used: the path to the session
+   transcript (JSONL).
 2. **`COLUMNS` environment variable.** Claude Code sets it to the terminal width. `/dev/tty` is
    **not** available to the status line command, so `stty size` fails.
 
@@ -68,10 +68,8 @@ The transcript is JSONL, one entry per line.
    naturally.
 6. **"Last message" for line 1** means every call after the last user message, as defined in rule 4.
 
-## Line 1: context bar and last message
+## Line 1: last message
 
-- **Bar:** 8 cells, filled cells = round(pct × 8 / 100). Green below 50%, yellow from 50%, red
-  from 80%.
 - **`last:`** covers the calls since the last user message: `N calls`, `× ~avg doc` where
   avg = (new + re-read) / calls, `= total read`, `(X new)`, `· Y out`.
 - **Hidden when the current message has 0 calls**, right after the user hits enter.
@@ -142,7 +140,7 @@ Each of these broke the display at least once.
 
 ## Acceptance checks
 
-Run `echo '{"context_window":{"used_percentage":34},"transcript_path":"<path>"}' | COLUMNS=200 ./skyline.sh`
+Run `echo '{"transcript_path":"<path>"}' | COLUMNS=200 ./skyline.sh`
 and check:
 
 - [ ] A message with 1 call is 1 column wide, and a message with 11 calls is 11 columns.

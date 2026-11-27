@@ -1,10 +1,12 @@
 # skyline
 
-A token usage status line for Claude Code: a context bar, what your last message cost, and a
-stacked bar chart of tokens per call for every message, one "building" per message.
+A token usage chart that goes **below your existing status line**. It does not replace it: your
+model, branch, context and rate limits stay on top, and skyline adds what your last message cost
+and a stacked bar chart of tokens per call for every message, one "building" per message.
 
 ```
-▰▰▰▱▱▱▱▱ 34%  last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
+your status line (model, branch, context, limits …)
+last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
   50k                                                      ■ output
                                                            ■ new input
                                                            ■ re-read ÷20  (335.0k per call now)
@@ -14,7 +16,7 @@ stacked bar chart of tokens per call for every message, one "building" per messa
       ──────────────────────────────────────────────────────
 ```
 
-- **Line 1:** context-window bar, then the last message: calls × average document size = tokens
+- **`last:` line:** what your last message cost: calls × average document size = tokens
   read, how many were new, and output.
 - **Chart:** one bar per message you sent. Width is the number of model calls it took (one column
   per call); height is average tokens per call, stacked as re-read (teal, divided by 20), new input
@@ -32,9 +34,11 @@ Needs `jq`. Subagent usage is not counted.
 /skyline:install
 ```
 
-`/skyline:install` copies `skyline.sh` to `~/.claude/skyline-statusline.sh` and points
-`statusLine` in `~/.claude/settings.json` at it. Plugins can't set `statusLine` themselves, so
-this step is needed. It replaces any other status line, fineline included.
+`/skyline:install` copies `skyline.sh` to `~/.claude/skyline-statusline.sh` and adds it under the
+status line you already have: it writes `~/.claude/statusline-stack.sh`, which runs your status
+line first and skyline below it, and points `statusLine` in `~/.claude/settings.json` at that.
+If you have no status line yet, skyline is used on its own. Plugins can't set `statusLine`
+themselves, so this step is needed.
 
 ## Settings
 

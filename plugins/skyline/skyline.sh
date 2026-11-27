@@ -1,28 +1,17 @@
 #!/usr/bin/env bash
 # Skyline: a token usage status line for Claude Code.
 # Reads the status line JSON on stdin and prints:
-#   line 1: context bar + what the last message cost in tokens
+#   line 1: what the last message cost in tokens (hidden until the message has a call)
 #   lines 2-8: a stacked bar chart of tokens per call for every message in the session
 # Needs: bash, jq, awk (BSD or GNU). See SPEC.md for the full spec.
+# Prints no context bar or model/branch line: run another status line above it for those.
 export LC_NUMERIC=C
 input=$(cat)
 j() { printf '%s' "$input" | jq -r "$1 // empty" 2>/dev/null; }
-pct=$(j '.context_window.used_percentage')
 tp=$(j '.transcript_path')
 R=$'\e[0m'; DIM=$'\e[2m'
-GRN=$'\e[32m'; YEL=$'\e[33m'; RED=$'\e[31m'
-SEP="${DIM}  ${R}"
 
 line2=""
-if [ -n "$pct" ]; then
-  n=$(printf '%.0f' "$pct")
-  if [ "$n" -ge 80 ]; then C=$RED; elif [ "$n" -ge 50 ]; then C=$YEL; else C=$GRN; fi
-  f=$(( (n * 8 + 50) / 100 )); [ "$f" -gt 8 ] && f=8
-  bar=""; for i in 1 2 3 4 5 6 7 8; do
-    if [ "$i" -le "$f" ]; then bar+="▰"; else bar+="▱"; fi
-  done
-  line2+="${C}${bar}${R} ${C}${n}%${R}"
-fi
 # Tokens used by the last turn: every API call since your last prompt (main thread only).
 # calls x avg doc size = total read; new = uncached input + cache writes; the rest is cache reads; out = output.
 k() { awk -v n="$1" 'BEGIN{ if(n>=1e6) printf "%.1fM",n/1e6; else if(n>=1e3) printf "%.1fk",n/1e3; else printf "%d",n }'; }
@@ -36,7 +25,6 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
       | unique_by(.message.id) | map(.message.usage)
       | "\(length) \(map((.input_tokens // 0) + (.cache_creation_input_tokens // 0)) | add // 0) \(map(.cache_read_input_tokens // 0) | add // 0) \(map(.output_tokens // 0) | add // 0)"' 2>/dev/null)
     if [ -n "$calls" ] && [ "$calls" -gt 0 ]; then
-      [ -n "$line2" ] && line2+="${SEP}"
       read_total=$(( tin + tcache )); avg=$(( read_total / calls ))
       line2+="${DIM}last:${R} ${calls} call$([ "$calls" -eq 1 ] || echo s) ${DIM}×${R} ~$(k "$avg") doc ${DIM}=${R} $(k "$read_total") read ${DIM}($(k "$tin") new)${R} ${DIM}·${R} $(k "$tout") out"
     fi
@@ -114,5 +102,7 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
       }')
   fi
 fi
-[ -n "$line2" ] && printf '%s' "$line2"
-[ -n "$chart_lines" ] && printf '%s\n' "$chart_lines" | while IFS= read -r l; do printf '\n%s' "$l"; done
+# one line per row, with no blank first line when the last: line is hidden
+out="$line2"
+[ -n "$chart_lines" ] && out="${out:+$out$'\n'}$chart_lines"
+printf '%s' "$out"
