@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 # Skyline: a token usage status line for Claude Code.
-# Reads the status line JSON on stdin and prints:
-#   line 1: what the last message cost in tokens (hidden until the message has a call)
-#   lines 2-8: a stacked bar chart of tokens per call for every message in the session
+# Reads the status line JSON on stdin and prints a stacked bar chart of tokens per call for
+# every message in the session.
 # Needs: bash, jq, awk (BSD or GNU). See SPEC.md for the full spec.
 # Prints no context bar or model/branch line: run another status line above it for those.
 export LC_NUMERIC=C
@@ -10,26 +9,6 @@ input=$(cat)
 j() { printf '%s' "$input" | jq -r "$1 // empty" 2>/dev/null; }
 tp=$(j '.transcript_path')
 R=$'\e[0m'; DIM=$'\e[2m'
-
-line2=""
-# Tokens used by the last turn: every API call since your last prompt (main thread only).
-# calls x avg doc size = total read; new = uncached input + cache writes; the rest is cache reads; out = output.
-k() { awk -v n="$1" 'BEGIN{ if(n>=1e6) printf "%.1fM",n/1e6; else if(n>=1e3) printf "%.1fk",n/1e3; else printf "%d",n }'; }
-if [ -n "$tp" ] && [ -f "$tp" ]; then
-  start=$(grep -n '"type":"user"' "$tp" | grep -v '"tool_result"' | cut -d: -f1 | awk '{a[NR]=$0} END{for(i=NR;i>0;i--) print a[i]}' | while read -r ln; do
-    sed -n "${ln}p" "$tp" | jq -e 'select(.isMeta != true and .isSidechain != true and .isCompactSummary != true and (.message.content | type == "string" or any(.[]?; .type == "text")))' >/dev/null 2>&1 && { echo "$ln"; break; }
-  done)
-  if [ -n "$start" ]; then
-    read -r calls tin tcache tout < <(tail -n +"$start" "$tp" | jq -rs '
-      [ .[] | select(.type == "assistant" and .isSidechain != true and .message.usage) ]
-      | unique_by(.message.id) | map(.message.usage)
-      | "\(length) \(map((.input_tokens // 0) + (.cache_creation_input_tokens // 0)) | add // 0) \(map(.cache_read_input_tokens // 0) | add // 0) \(map(.output_tokens // 0) | add // 0)"' 2>/dev/null)
-    if [ -n "$calls" ] && [ "$calls" -gt 0 ]; then
-      read_total=$(( tin + tcache )); avg=$(( read_total / calls ))
-      line2+="${DIM}last:${R} ${calls} call$([ "$calls" -eq 1 ] || echo s) ${DIM}×${R} ~$(k "$avg") doc ${DIM}=${R} $(k "$read_total") read ${DIM}($(k "$tin") new)${R} ${DIM}·${R} $(k "$tout") out"
-    fi
-  fi
-fi
 
 # Chart: tokens per call since the document started (resets on /clear or compaction).
 # One column per call, so a message is as wide as its calls, with a thin gap at the start of each
@@ -102,7 +81,4 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
       }')
   fi
 fi
-# one line per row, with no blank first line when the last: line is hidden
-out="$line2"
-[ -n "$chart_lines" ] && out="${out:+$out$'\n'}$chart_lines"
-printf '%s' "$out"
+printf "%s" "$chart_lines"

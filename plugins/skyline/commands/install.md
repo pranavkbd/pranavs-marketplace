@@ -3,8 +3,7 @@ description: Install the skyline token chart below your current status line
 allowed-tools: Bash, Read, Edit, Write
 ---
 
-Install the skyline status line that ships with this plugin. Skyline only draws the token chart
-(the `last:` line and the bars). It goes **below** whatever status line the user already has.
+Install the skyline status line that ships with this plugin. Skyline only draws the token chart. It goes **below** whatever status line the user already has.
 
 1. Copy `${CLAUDE_PLUGIN_ROOT}/skyline.sh` to `~/.claude/skyline-statusline.sh` and make it
    executable. If that file already exists and differs, back it up first to
@@ -20,7 +19,8 @@ Install the skyline status line that ships with this plugin. Skyline only draws 
      input=$(cat)
      top=$(printf '%s' "$input" | <TOP> 2>/dev/null)
      sky=$(printf '%s' "$input" | bash ~/.claude/skyline-statusline.sh 2>/dev/null)
-     if [ -n "$top" ] && [ -n "$sky" ]; then printf '%s\n%s' "$top" "$sky"; else printf '%s%s' "$top" "$sky"; fi
+     # a Braille blank (U+2800) spacer line between the two: Claude Code may drop a truly empty line
+     if [ -n "$top" ] && [ -n "$sky" ]; then printf '%s\n⠀\n%s' "$top" "$sky"; else printf '%s%s' "$top" "$sky"; fi
      ```
 
      Then set `statusLine` to `{ "type": "command", "command": "bash ~/.claude/statusline-stack.sh" }`.

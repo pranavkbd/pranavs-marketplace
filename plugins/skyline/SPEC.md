@@ -10,7 +10,6 @@ On screen, `■ output` and the top of each bar are red, `■ new input` is ambe
 and the bottom of each bar are teal.
 
 ```
-last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
   50k                                                      ■ output
                                                            ■ new input
                                                            ■ re-read ÷20  (335.0k per call now)
@@ -20,7 +19,6 @@ last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
       ──────────────────────────────────────────────────────
 ```
 
-- **Line 1:** what the user's last message cost.
 - **The chart:** one bar per message the user sent. A bar's **width** is the number of model calls
   that message took (one column per call). Its **height** is the average tokens per call, stacked
   bottom to top as re-read (divided by 20), new input, then output. Each bar starts with a thin gap.
@@ -66,14 +64,6 @@ The transcript is JSONL, one entry per line.
 5. **`isCompactSummary == true` starts a new document.** After compaction the call list is cleared
    so the chart starts over. `/clear` starts a new transcript file, so it resets the chart
    naturally.
-6. **"Last message" for line 1** means every call after the last user message, as defined in rule 4.
-
-## Line 1: last message
-
-- **`last:`** covers the calls since the last user message: `N calls`, `× ~avg doc` where
-  avg = (new + re-read) / calls, `= total read`, `(X new)`, `· Y out`.
-- **Hidden when the current message has 0 calls**, right after the user hits enter.
-- Number format: `1234 → 1.2k`, `1234567 → 1.2M`, below 1000 as an integer.
 
 ## The chart
 
@@ -150,5 +140,5 @@ and check:
 - [ ] Duplicate transcript lines with the same `message.id` are counted once.
 - [ ] A fresh session (1–2 messages) draws a short chart with a 10k or 20k top.
 - [ ] More calls than `W` scrolls whole messages off and shows `last N of M messages`.
-- [ ] Right after the user sends a message (0 calls yet), `last:` is hidden and nothing errors.
+- [ ] Right after the user sends a message (0 calls yet), nothing errors.
 - [ ] A transcript whose last entry is a compaction summary draws no chart until the next call.

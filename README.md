@@ -6,7 +6,7 @@ My Claude Code plugins.
 |---|---|
 | [`assistant-worker`](plugins/assistant-worker/) | An assistant you talk to, one worker session per thread of work, and a browser agent |
 | [`fineline`](plugins/fineline/) | A two-line status line with thin bars: branch and model, then context and rate limits |
-| [`skyline`](plugins/skyline/) | A token usage chart that goes below your existing status line: last message cost and tokens per call |
+| [`skyline`](plugins/skyline/) | A token usage chart that goes below your existing status line: one bar per message, tokens per call |
 
 Install one:
 

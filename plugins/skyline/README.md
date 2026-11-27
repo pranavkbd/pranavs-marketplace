@@ -1,12 +1,12 @@
 # skyline
 
 A token usage chart that goes **below your existing status line**. It does not replace it: your
-model, branch, context and rate limits stay on top, and skyline adds what your last message cost
-and a stacked bar chart of tokens per call for every message, one "building" per message.
+model, branch, context and rate limits stay on top, and skyline adds a stacked bar chart of tokens
+per call for every message below them, one "building" per message.
 
 ```
 your status line (model, branch, context, limits …)
-last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
+
   50k                                                      ■ output
                                                            ■ new input
                                                            ■ re-read ÷20  (335.0k per call now)
@@ -16,8 +16,6 @@ last: 3 calls × ~339.1k doc = 1.0M read (8.0k new) · 3.8k out
       ──────────────────────────────────────────────────────
 ```
 
-- **`last:` line:** what your last message cost: calls × average document size = tokens
-  read, how many were new, and output.
 - **Chart:** one bar per message you sent. Width is the number of model calls it took (one column
   per call); height is average tokens per call, stacked as re-read (teal, divided by 20), new input
   (amber) and output (red).
