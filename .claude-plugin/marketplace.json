@@ -31,6 +31,11 @@
       "name": "quietlint",
       "source": "./plugins/quietlint",
       "description": "Lints each file Claude edits with your project's own linter and stays silent unless there are errors, so checking costs no tokens. /quietlint:setup adds format and lint to pre-commit."
+    },
+    {
+      "name": "clear-yourself",
+      "source": "./plugins/clear-yourself",
+      "description": "Say \"clear yourself\" and Claude writes a handoff document, you type /clear, and the fresh session reads it and carries on. Claude pushes back if it's in the middle of something."
     }
   ]
 }
