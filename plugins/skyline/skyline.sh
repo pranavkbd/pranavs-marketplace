@@ -106,11 +106,11 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
           lab=(r==ROWS-1)?sprintf("\033[38;5;167m■%s output",R): \
               (r==ROWS-2)?sprintf("\033[38;5;179m■%s new input",R): \
               (r==ROWS-3)?sprintf("\033[38;5;73m■%s re-read ÷20  %s(%s per call now)%s",R,DIM,k(floor),R): \
-              (r==1)?sprintf("\033[1;38;5;141m%d call%s%s %s·%s %s",N,(N==1)?"":"s",R,DIM,R,note): \
+              (r==1)?sprintf("\033[1m%s%s",note,R): \
               (r==0)?sprintf("%ssession%s %s new · %s out · %s re-read total %s(all calls)%s",DIM,R,k(tn),k(to),k(tf),DIM,R):""
           print line pad B B lab }
         base=""; for(j=0;j<L;j++) base=base "─"  # bottom of the chart
-        printf "%s%s%s%s\n", yax("",B), DIM, base, R
+        printf "%s%s%s%s%s%s\033[1;38;5;141m%d call%s%s\n", yax("",B), DIM, base, R, B, B, N, (N==1)?"":"s", R  # call count sits on the baseline, under the bars
       }')
   fi
 fi
