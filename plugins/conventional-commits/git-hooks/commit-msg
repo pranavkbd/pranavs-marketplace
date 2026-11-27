@@ -1,0 +1,29 @@
+#!/bin/sh
+# conventional-commits: reject commit messages that are not Conventional Commits.
+# Installed by /conventional-commits:setup. Git passes the path of the message file as $1.
+
+types='feat|fix|chore|docs|refactor|test|style|perf|ci|build|revert'
+
+# first line that is not a comment or blank
+first=$(grep -v '^#' "$1" | sed '/^[[:space:]]*$/d' | head -n 1)
+
+# messages git writes itself
+case "$first" in
+  "Merge "*|"Revert \""*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+if printf '%s\n' "$first" | grep -Eq "^($types)(\([^()]+\))?!?: [^ ]"; then
+  exit 0
+fi
+
+cat >&2 <<EOF
+commit-msg: this is not a Conventional Commits message:
+
+  $first
+
+Use:      <type>[optional scope]: <description>
+Types:    $(printf '%s' "$types" | sed 's/|/, /g')
+Example:  feat(parser): handle empty input
+Breaking: add ! before the colon, e.g. feat(api)!: drop v1 routes
+EOF
+exit 1

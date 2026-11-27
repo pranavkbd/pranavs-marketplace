@@ -21,6 +21,11 @@
       "name": "skyline",
       "source": "./plugins/skyline",
       "description": "Skyline: a token usage chart that goes below your existing status line, not in place of it. One bar per message, showing tokens per call."
+    },
+    {
+      "name": "conventional-commits",
+      "source": "./plugins/conventional-commits",
+      "description": "Conventional Commits for Claude and git: tells Claude the rule every session, and /conventional-commits:setup adds a commit-msg hook that rejects messages in the wrong format."
     }
   ]
 }

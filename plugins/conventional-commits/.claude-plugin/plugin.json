@@ -1,0 +1,8 @@
+{
+  "name": "conventional-commits",
+  "version": "0.1.0",
+  "description": "Conventional Commits for Claude and git: tells Claude the rule every session, and /conventional-commits:setup adds a commit-msg hook that rejects messages in the wrong format.",
+  "author": {
+    "name": "Pranav Bodawala"
+  }
+}
