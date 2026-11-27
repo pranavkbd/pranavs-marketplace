@@ -8,6 +8,7 @@ My Claude Code plugins.
 | [`fineline`](plugins/fineline/) | A two-line status line with thin bars: branch and model, then context and rate limits |
 | [`skyline`](plugins/skyline/) | A token usage chart that goes below your existing status line: one bar per message, tokens per call |
 | [`conventional-commits`](plugins/conventional-commits/) | Tells Claude to use Conventional Commits, and adds a git hook that rejects anything else |
+| [`quietlint`](plugins/quietlint/) | Lints each file Claude edits and stays silent unless there are errors; formats and lints on commit |
 
 Install one:
 

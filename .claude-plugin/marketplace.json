@@ -26,6 +26,11 @@
       "name": "conventional-commits",
       "source": "./plugins/conventional-commits",
       "description": "Conventional Commits for Claude and git: tells Claude the rule every session, and /conventional-commits:setup adds a commit-msg hook that rejects messages in the wrong format."
+    },
+    {
+      "name": "quietlint",
+      "source": "./plugins/quietlint",
+      "description": "Lints each file Claude edits with your project's own linter and stays silent unless there are errors, so checking costs no tokens. /quietlint:setup adds format and lint to pre-commit."
     }
   ]
 }

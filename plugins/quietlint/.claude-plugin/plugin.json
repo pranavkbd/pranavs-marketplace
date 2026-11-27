@@ -1,0 +1,6 @@
+{
+  "name": "quietlint",
+  "version": "0.1.0",
+  "description": "Lints each file Claude edits with your project's own linter and stays silent unless there are errors, so checking costs no tokens. /quietlint:setup adds format and lint to pre-commit.",
+  "author": { "name": "Pranav Bodawala" }
+}
