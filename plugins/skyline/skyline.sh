@@ -92,7 +92,7 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
           if(mf[q]+mn[q]+mo[q]>mx) mx=mf[q]+mn[q]+mo[q]; L++ }
         # top of chart: first of 10k, 20k, 50k, 100k, 200k, 500k, 1M, ... at least twice the tallest bar
         M=10000; while(M<2*mx){ M*=(substr(M,1,1)=="2")?2.5:2 }
-        note=(first>1)?sprintf("last %d of %d messages", m-first+1, m):sprintf("%d messages", m)
+        note=(first>1)?sprintf("last %d of %d messages", m-first+1, m):sprintf("%d message%s", m, (m==1)?"":"s")
         for(r=ROWS-1;r>=0;r--){ line=(r==ROWS-1)?yax(ak(M),B):(ROWS%2==0 && r==ROWS/2-1)?yax(ak(M/2),B):yax("",B)
           for(j=0;j<L;j++){
             b1=cf[j]/M*H; b2=(cf[j]+cn[j])/M*H; b3=(cf[j]+cn[j]+co[j])/M*H
@@ -106,7 +106,7 @@ if [ -n "$tp" ] && [ -f "$tp" ]; then
           lab=(r==ROWS-1)?sprintf("\033[38;5;167m■%s output",R): \
               (r==ROWS-2)?sprintf("\033[38;5;179m■%s new input",R): \
               (r==ROWS-3)?sprintf("\033[38;5;73m■%s re-read ÷20  %s(%s per call now)%s",R,DIM,k(floor),R): \
-              (r==1)?sprintf("\033[1m%s · %d calls%s",note,N,R): \
+              (r==1)?sprintf("\033[1;38;5;141m%d call%s%s %s·%s %s",N,(N==1)?"":"s",R,DIM,R,note): \
               (r==0)?sprintf("%ssession%s %s new · %s out · %s re-read total %s(all calls)%s",DIM,R,k(tn),k(to),k(tf),DIM,R):""
           print line pad B B lab }
         base=""; for(j=0;j<L;j++) base=base "─"  # bottom of the chart
