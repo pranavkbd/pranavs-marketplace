@@ -88,10 +88,11 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/mark-handoff.sh" <handoff file>
 ```
 
 It records the handoff so that the session starting after `/clear` is told to read it first.
-Then end the turn with exactly these two lines, the handoff path filled in and the second line
-word for word (it is the user's own sign-off, spelling included):
+Then end the turn with exactly these lines, the handoff path filled in and the rest word for
+word (the last line is the user's own sign-off, spelling included):
 
-> Handoff is in `.local/handoffs/skyline-plugin.md`.
+> Handoff is in `.local/handoffs/skyline-plugin.md`. Type `/clear` and the fresh session will
+> pick up from it.
 >
 > KLEAR ME NOW!
 
