@@ -2,6 +2,11 @@
   "hooks": {
     "SessionStart": [
       {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-start-tmux.sh\"", "timeout": 10 }
+        ]
+      },
+      {
         "matcher": "clear",
         "hooks": [
           { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/on-clear.sh\"", "timeout": 10 }

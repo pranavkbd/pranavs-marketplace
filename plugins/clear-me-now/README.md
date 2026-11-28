@@ -9,11 +9,25 @@ Clear Me Now lets you reset one without losing your place:
 3. Otherwise it writes or updates a **handoff document**: the goal, where things stand and the
    exact next step, decisions and why, your preferences and corrections, background on the
    topic, the files and docs that matter, how to run things, open questions and git state.
-4. You type **`/clear`**, then **`go`**.
+4. You type **`/clear`**, then **`go`**. In [tmux](#in-tmux), Claude does both itself.
 5. The fresh session is told to read the handoff before anything else, and carries on.
 
-Typing `/clear` yourself is on purpose: it's your checkpoint, and a chance to read the handoff
-first. Claude can't run `/clear` on itself.
+Outside tmux, typing `/clear` yourself is on purpose: it's your checkpoint, and a chance to read
+the handoff first. Claude Code has no way for Claude to run `/clear` on itself.
+
+## In tmux
+
+When Claude Code runs inside tmux, saying **"I'm gonna clear you"** is all you do. After writing the
+handoff, Claude runs `scripts/tmux-clear.sh`, which types `/clear` into its own pane (it runs when
+the turn ends), waits for the fresh session to pick up the handoff, then types `go`.
+
+- A `SessionStart` hook loads [`TMUX.md`](TMUX.md) into context only when `$TMUX` is set.
+- Nothing is typed unless a handoff was marked and this Claude is the one in the pane's foreground.
+  Otherwise you get the usual "Type `/clear`" ending.
+- Don't type into that pane while it's clearing: unsent text in the prompt would be sent together
+  with `/clear`. Esc doesn't cancel it: it ends the turn early and the queued `/clear` runs.
+  tmux copy mode only delays it.
+- Allow the two scripts when Claude Code asks, or it waits at the permission prompt.
 
 ## With assistant-worker
 
@@ -40,8 +54,8 @@ In a `.local/` folder at the top of the repo (the current folder outside git, no
 /plugin install clear-me-now@pranavs-marketplace
 ```
 
-No setup. Tested in the terminal; it uses only a skill and a `SessionStart` hook, so it should
-work the same in the IDE extensions and the desktop app.
+No setup. Tested in the terminal and in tmux 3.4; apart from the tmux part it uses only a skill and
+`SessionStart` hooks, so it should work the same in the IDE extensions and the desktop app.
 
 ## How the new session finds the handoff
 

@@ -81,6 +81,9 @@ user anything. A page or two is typical.
 
 ## 3. Hand over to the user
 
+If you're running in tmux, there are extra instructions in `${CLAUDE_PLUGIN_ROOT}/TMUX.md` that
+change this step (read it if it isn't already in your context).
+
 Run this as the **last thing in your turn**, with the handoff file's path:
 
 ```
@@ -96,6 +99,6 @@ word (the last line is the user's own sign-off, spelling included):
 >
 > KLEAR ME NOW!
 
-You can't run `/clear` yourself, and that's deliberate: the user typing it is their checkpoint.
+Outside tmux you can't run `/clear` yourself, and that's deliberate: the user typing it is their checkpoint.
 Don't do any more work after this. If the script fails, add one line before the sign-off: "After
 `/clear`, say: Continue from the handoff `<path>`."
