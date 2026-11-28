@@ -1,54 +1,73 @@
 # quietlint
 
-Linting that costs Claude no tokens. Every time Claude edits a file, quietlint runs your
-project's own linter on that one file. If it's clean, nothing is printed and Claude never hears
-about it. If there are errors, they go straight back to Claude (errors only, capped at 40 lines),
-while it is still working on that file. Claude doesn't have to remember to lint or spend a turn
-doing it.
+Set a repo up once, and Claude never spends context thinking about linting.
 
-Formatting waits until commit time: `/quietlint:setup` adds a pre-commit hook that formats and
-lints the staged files, so Claude never spends effort on formatting while it works.
+- **At the end of each turn**, the files Claude edited in that session are linted and type
+  checked with the repo's own tools. If they pass, nothing is printed. If not, the problems
+  (capped at 40 lines) go back to Claude and it fixes them before it finishes. Warnings fail
+  too.
+- **At commit**, a pre-commit hook formats the staged files, re-stages them, then lints them.
+
+Nothing runs while Claude is editing. Each edit only records the file's path.
 
 ## Install
 
 ```
 /plugin install quietlint@pranavs-marketplace
-/quietlint:setup      # in each repo where you want format + lint on commit
+/quietlint:setup      # once in each repo
 ```
 
-The lint-on-edit hook needs `jq` and works as soon as the plugin is installed.
+The hooks need `jq`. They do nothing in a repo until `/quietlint:setup` has written
+`.claude/quietlint.json`.
 
-## Linting on edit
+## Setup
 
-quietlint only uses linters your project already has. It never downloads one.
+`/quietlint:setup` is meant for repos that already lint. It finds the linters, type checkers
+and formatter the repo uses and reuses them. It asks questions only for a language that has no
+tools set up, and before adding any dependency. It then:
 
-| Files | Linter | Used when |
-|---|---|---|
-| `.js .jsx .ts .tsx .mjs .cjs .vue .svelte` | biome | `biome.json` and `node_modules/.bin/biome` exist |
-| same | eslint | `node_modules/.bin/eslint` exists |
-| `.py` | ruff | `.venv/bin/ruff`, or a ruff config with `ruff` on your PATH |
-| `.sh .bash` | shellcheck | `shellcheck` is on your PATH |
+1. Writes `.claude/quietlint.json` with the turn-end checks.
+2. Adds a pre-commit hook that formats, re-stages and lints the staged files, using the hook
+   setup the repo already has (husky, lefthook, pre-commit, `core.hooksPath`) or the usual one
+   for its ecosystem.
+3. Adds a short section to `CLAUDE.md` saying what is checked and when, and that warnings fail,
+   so Claude writes code that passes the first time.
 
-For anything else, or to use a different linter, add `.claude/quietlint.json` to the project.
-It maps a filename glob to a command, run from the project root, that fails when there are
-errors. `{file}` is the edited file and `{dir}` its folder:
+Markdown is linted too where a linter fits (markdownlint-cli2 if the repo has nothing).
+
+## Turn-end checks
 
 ```json
 {
-  "*.java": "./gradlew -q checkstyleMain",
-  "*.go": "go vet ./{dir}",
-  "*.rb": "bundle exec rubocop --fail-level error {file}"
+  "checks": [
+    { "name": "eslint", "files": ["ui/*.ts", "ui/*.tsx"], "cwd": "ui",
+      "run": "node_modules/.bin/eslint --max-warnings 0 --no-warn-ignored {files}" },
+    { "name": "tsc", "files": ["ui/*.ts", "ui/*.tsx"], "cwd": "ui",
+      "run": "node_modules/.bin/tsc --noEmit --pretty false" },
+    { "name": "go vet", "files": ["*.go"], "run": "go vet {dirs}" },
+    { "name": "markdownlint", "files": ["*.md"], "run": "npx markdownlint-cli2 {files}" }
+  ]
 }
 ```
 
-A matching entry replaces the built-in linter for those files. Keep the commands fast: they run
-after every edit, with a 30-second limit. Slow whole-project checks (type checks, tests) belong
-in the pre-commit hook instead.
+| Key | Meaning |
+|---|---|
+| `files` | Globs on the path from the repo root (`*` also matches `/`). A check runs only if this session edited a matching file. |
+| `cwd` | Folder to run in, relative to the root. Default: the root. Only files under it are passed in. |
+| `run` | Shell command that exits non-zero on problems. `{files}` is the matched files, `{dirs}` their folders (`./dir`), relative to `cwd`. |
+| `filter` | Keep only output lines naming this session's files. Default: on when `run` has no `{files}`. |
 
-## Format and lint on commit
+How it works:
 
-`/quietlint:setup` adds a pre-commit hook that formats the staged files, re-stages them, then
-lints them and blocks the commit on errors. It uses the hook setup the repo already has (husky,
-lefthook, pre-commit, `core.hooksPath`), or the usual one for the ecosystem: husky with
-lint-staged for npm, pre-commit with ruff for Python, spotless for Java, and so on. It asks
-before adding a new dependency.
+- A PostToolUse hook on `Edit|Write|MultiEdit|NotebookEdit` appends the file's path to
+  `<git dir>/quietlint/<session id>`. It runs nothing and prints nothing.
+- A Stop hook takes that list, clears it, and runs the checks whose `files` match. Clearing
+  first means a failure can't loop: a file is checked again only if Claude edits it again.
+- Only this session's files are checked, never everything uncommitted, because other agents
+  may be editing other files in the same checkout. Whole-project tools like tsc and
+  `go vet ./pkg` report every file they see, so their output is filtered to this session's
+  files. A check that fails without naming any file is reported as broken, so a wrong command
+  doesn't go silent.
+- Git-ignored and deleted files are skipped. Edits in a repo other than the one the session
+  started in are not checked.
+- The Stop hook has a 5-minute limit for all checks together.
