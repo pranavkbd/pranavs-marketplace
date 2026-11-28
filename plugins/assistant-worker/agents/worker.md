@@ -36,3 +36,5 @@ screenshot only if its verdict isn't enough.
 
 Corrections from the assistant override your plan. Everything else in your usual instructions
 applies.
+
+**tmux.** If you're running in tmux, there are extra instructions in TMUX-worker.md.

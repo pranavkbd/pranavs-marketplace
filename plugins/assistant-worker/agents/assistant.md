@@ -56,3 +56,5 @@ thread is done, say so and that its terminal can close.
 
 **Browser.** Never call Playwright tools yourself; spawn the `browser` subagent with the URL, what
 to check and what good looks like, and read its short verdict.
+
+**tmux.** If you're running in tmux, there are extra instructions in TMUX-assistant.md.
